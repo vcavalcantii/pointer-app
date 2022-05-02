@@ -1,2 +1,1 @@
-# pointer-app
-Aplicacao contador de acessos.
+# Pointer APP
