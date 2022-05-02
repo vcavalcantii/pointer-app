@@ -1,0 +1,35 @@
+---
+- name: Instalando Docker
+  apt:
+    name: docker.io
+    update_cache: yes
+    state: present
+- name: Instalando docker-compose
+  apt:
+    name: docker-compose
+    update_cache: yes
+    state: present
+- name: Habilitar Docker no boot
+  service:
+    name: docker
+    enabled: yes
+    state: started
+- name: Copiando arquivos para o host
+  copy:
+    src: "{{ item }}"
+    dest: "/home/admin/{{ item }}"
+  with_items:
+    - docker-compose.yml
+    - Dockerfile
+    - app.py
+    - requirements.txt
+- name: Construindo a imagem Docker
+  command: docker build -t pythonapp:1.0 .
+  register: docker_build
+  args:
+    chdir: /home/admin
+- name: Subindo a aplicacao
+  command: docker-compose up -d
+  register: docker_compose_up
+  args:
+    chdir: /home/admin
